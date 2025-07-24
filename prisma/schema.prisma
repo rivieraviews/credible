@@ -13,3 +13,46 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique //no duplicate user registrations
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  cards        CreditCard[] //one user can have multiple credit cards - 1:N relationship
+}
+
+model CreditCard {
+  id             String        @id @default(uuid())
+  user           User          @relation(fields: [userId], references: [id])
+  userId         String
+  cardName       String
+  issuer         String
+  lastFourDigits String
+  expiresOn      DateTime
+  billingDay     Int
+  paymentDay     Int
+  isPaid         Boolean
+  annualFee      Decimal
+  status         CardStatus    @default(Active)
+  createdAt      DateTime      @default(now())
+  loungeCredits  LoungeCredit? //one card can have one lounge credit record - 1:1 relationship
+}
+
+model LoungeCredit {
+  id           String     @id @default(uuid())
+  card         CreditCard @relation(fields: [cardId], references: [id])
+  cardId       String     @unique //each card can have only one lounge credit record, reflecting a 1:1 relationship
+  totalCredits Int
+  usedCredits  Int
+  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime   @default(now())
+}
+
+enum CardStatus {
+  Active
+  Inactive
+  Closed
+  Expired
+}
