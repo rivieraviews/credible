@@ -4,7 +4,10 @@
   "description": "A database for your credit cards.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node prisma/seed.js",
+    "reset": "node prisma/reset.js",
+    "devStart": "nodemon src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,8 @@
   },
   "homepage": "https://github.com/rivieraviews/credible#readme",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.1.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.12.0",
@@ -25,6 +30,9 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.12.0"
+    "@prisma/client": "^6.12.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0"
   }
 }
