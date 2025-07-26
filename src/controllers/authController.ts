@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';    //bcrypt is used for hashing passwords
 import jwt from 'jsonwebtoken'; //jsonwebtoken is used for creating JWT tokens
+import { AuthenticatedRequest } from '../middleware/authMiddleware';
 import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
@@ -80,3 +81,22 @@ export const login = async (req: Request, res: Response) => { //login function t
         res.status(500).json({ error: 'Failed to login.' });
     }
 };
+
+export const getMe = async (req: AuthenticatedRequest, res: Response) => {   //getMe function to retrieve the authenticated user's details
+    try {
+        //selecting the user by ID, as well as their name and email
+        const user = await prisma.user.findUnique({
+            where: { id: req.userId },
+            select: { id: true, name: true, email: true }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error('Error in /auth/me: ', error);
+        res.status(500).json({ error: 'Failed to retrieve user.' });
+    }
+}
