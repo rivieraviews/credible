@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import cardRoutes from './routes/cardRoutes';  //importing card routes
+import authRoutes from './routes/authRoutes';  //importing auth routes
 
 dotenv.config();    //loading environment variables from .env file
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());  //enabling cross-origin resource sharing (CORS) for all routes
 app.use(express.json());  //parsing JSON bodies
 
 app.use('/api/cards', cardRoutes);  //mounting card routes under /api/cards path
+app.use('/api/auth', authRoutes);  //mounting auth routes under /api/auth path
 
 //starting the server:
 const PORT = process.env.PORT || 3000;  //setting the port from environment variable or defaulting to 3000
