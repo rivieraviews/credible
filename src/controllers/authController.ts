@@ -50,3 +50,33 @@ export const signup = async (req: Request, res: Response) => {  //signup functio
         res.status(500).json({error: 'Failed to create user.'});
     }
 };
+
+export const login = async (req: Request, res: Response) => { //login function to handle user authentication
+    const { email, password } = req.body;
+
+    try {
+        //finding the user by email
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        //if user not found or password is incorrect:
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid email or password.' });
+        }
+
+        //comparing the provided password with the hashed password in the database
+        const passwordValid = await bcrypt.compare(password, user.passwordHash);
+        if (!passwordValid) {
+            return res.status(401).json({ error: 'Invalid email or password.' });
+        }
+
+        //if the password is valid, create a JWT token
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token, user: { id: user.id , name: user.name, email: user.email } });
+    } catch (error) {
+        console.error('Login error: ', error);
+        res.status(500).json({ error: 'Failed to login.' });
+    }
+};
