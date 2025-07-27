@@ -132,3 +132,29 @@ export const updateCardById = async (req: AuthenticatedRequest, res: Response) =
         res.status(500).json({ error: 'Failed to update card.' });
     }
 };
+
+export const deleteCardById = async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const card = await prisma.creditCard.findFirst({
+            where: {
+                id,
+                userId: req.userId,
+            },
+        });
+
+        if (!card) {
+            return res.status(404).json({ error: 'Card not found.' });
+        }
+
+        await prisma.creditCard.delete({
+            where: { id },
+        });
+
+        res.status(204).send(); //no content to return after deletion
+    } catch (error) {
+        console.error('Error deleting card: ', error);
+        res.status(500).json({ error: 'Failed to delete card.' });
+    }
+};
