@@ -58,3 +58,26 @@ export const createCard = async (req: AuthenticatedRequest, res: Response) => {
         res.status(500).json({ error: 'Failed to create card' });
     }
 };
+
+export const getCardById = async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const card = await prisma.creditCard.findFirst({
+            where: {
+                id,
+                userId: req.userId,
+            },
+            include: { loungeCredits: true},
+        });
+
+        if (!card) {
+            return res.status(404).json({ error: 'Card not found.' });
+        }
+
+        res.json(card);
+    } catch (error) {
+        console.error('Error fetching card: ', error);
+        res.status(500).json({ error: 'Failed to fetch card.' });
+    }
+};
