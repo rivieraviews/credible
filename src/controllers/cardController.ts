@@ -1,18 +1,15 @@
-//this file will store Prisma-related logic for card management
-
 import { Request, Response } from 'express';
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); 
 
 export const getAllCards = async (req: Request, res: Response) => {
-    //this function retrieves all credit cards from the database
-    //it uses Prisma to query the database and returns the results as JSON  
+    //this function retrieves all credit cards from the database 
     try {
         const cards = await prisma.creditCard.findMany({
-            include: { loungeCredits: true },   //including lounge credits associated with each card
+            include: { loungeCredits: true },
         });
-        res.json(cards);    //responding with the retrieved cards in JSON format
+        res.json(cards);
     } catch (error) {
         console.error('Error fetching cards: ', error);
         res.status(500).json({ error: "Failed to fetch cards" });

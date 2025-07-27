@@ -10,7 +10,6 @@ export interface AuthenticatedRequest extends Request {
 export const authenticate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;   //retrieving the Auth header from the request
 
-    //checking if Auth header is present, and if so, if it starts with 'Bearer'
     if (!authHeader?.startsWith('Bearer')) {
         return res.status(401).json({ error: 'Unauthorized: Missing or malformed token.'});
     }
@@ -19,7 +18,6 @@ export const authenticate = (req: AuthenticatedRequest, res: Response, next: Nex
     const token = authHeader.split(' ')[1];
 
     try {
-        //verifying the token using the secret key
         const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
         req.userId = decoded.userId;
         next();
