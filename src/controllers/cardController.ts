@@ -1,14 +1,17 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../middleware/authMiddleware';
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); 
 
-export const getAllCards = async (req: Request, res: Response) => {
+export const getAllCards = async (req: AuthenticatedRequest, res: Response) => {
     //this function retrieves all credit cards from the database 
     try {
         const cards = await prisma.creditCard.findMany({
+            where: { userId: req.userId },
             include: { loungeCredits: true },
         });
+
         res.json(cards);
     } catch (error) {
         console.error('Error fetching cards: ', error);
@@ -16,11 +19,10 @@ export const getAllCards = async (req: Request, res: Response) => {
     }
 }
 
-export const createCard = async (req: Request, res: Response) => {
+export const createCard = async (req: AuthenticatedRequest, res: Response) => {
     //to add a new credit card to the database
     try {
         const {
-            userId,
             cardName,
             issuer,
             lastFourDigits,
@@ -32,9 +34,13 @@ export const createCard = async (req: Request, res: Response) => {
             status,
             } = req.body;
         
+        if (!req.userId) {
+            return res.status(400).json({ error: 'User ID is required.' });
+        }
+
         const newCard = await prisma.creditCard.create({
             data: {
-                userId,
+                userId: req.userId,
                 cardName,
                 issuer,
                 lastFourDigits,
@@ -44,8 +50,8 @@ export const createCard = async (req: Request, res: Response) => {
                 isPaid,
                 annualFee,
                 status,
-                }
-            });
+            }
+        });
         res.status(201).json(newCard);  //responding with the newly created card
     } catch (error) {
         console.error('Error creating card: ', error);
