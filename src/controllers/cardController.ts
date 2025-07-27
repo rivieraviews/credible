@@ -60,6 +60,7 @@ export const createCard = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 export const getCardById = async (req: AuthenticatedRequest, res: Response) => {
+    //this function retrieves a specific credit card by its ID
     const { id } = req.params;
 
     try {
@@ -79,5 +80,55 @@ export const getCardById = async (req: AuthenticatedRequest, res: Response) => {
     } catch (error) {
         console.error('Error fetching card: ', error);
         res.status(500).json({ error: 'Failed to fetch card.' });
+    }
+};
+
+export const updateCardById = async (req: AuthenticatedRequest, res: Response) => {
+    //this function updates a specific card by its ID
+    const { id } = req.params;
+    const {
+        cardName,
+        issuer,
+        lastFourDigits,
+        billingDay,
+        paymentDay,
+        expiresOn,
+        isPaid,
+        annualFee,
+        status,
+    } = req.body;
+
+    try {
+        //ensuring the card belongs to the authenticated user
+        const existingCard = await prisma.creditCard.findFirst({
+            where : {
+                id,
+                userId: req.userId,
+            },
+        });
+
+        if (!existingCard) {
+            return res.status(404).json({ error: 'Card not found.' });
+        }
+
+        const updatedCard = await prisma.creditCard.update({
+            where: { id },
+            data: {
+                cardName,
+                issuer,
+                lastFourDigits,
+                billingDay,
+                paymentDay,
+                expiresOn: new Date(expiresOn), //ensuring that the date is formatted correctly
+                isPaid,
+                annualFee,
+                status,
+            },
+        });
+
+        res.json(updatedCard);
+    } catch (error) {
+        console.error('Error updating card: ', error);
+        res.status(500).json({ error: 'Failed to update card.' });
     }
 };
