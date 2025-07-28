@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import cardRoutes from './routes/cardRoutes';  
+import cardRoutes from './routes/cardRoutes';
+import loungeRoutes from './routes/loungeRoutes';  
 import authRoutes from './routes/authRoutes';
 
 dotenv.config();
@@ -13,6 +14,8 @@ app.use(express.json());
 
 app.use('/api/cards', cardRoutes); 
 app.use('/api/auth', authRoutes);
+
+app.use('/api/cards', loungeRoutes);
 
 const PORT = process.env.PORT || 3000; 
 app.listen(PORT, () => {
