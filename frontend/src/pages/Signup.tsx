@@ -1,3 +1,3 @@
 export default function Signup() {
-    return <div className="text-2x1 text-secondary">Signup Page</div>
+    return <div className="text-2xl text-primary">Signup Page</div>
 }
