@@ -58,11 +58,15 @@ export default function Dashboard() {
             <DashboardCard
               icon={<Clock />}
               label="Next Payment"
-              value={new Date(data?.nextPayment ?? "").toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-              })}
+              value={
+                data?.nextPayment
+                 ? new Date(data.nextPayment).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric"
+              })
+              : "-"
+            }
               color="text-yellow-600"
             />
           </div>
