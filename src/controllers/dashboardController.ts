@@ -41,9 +41,9 @@ export const getDashboardSummary = async (req: AuthenticatedRequest, res: Respon
             },
         });
 
-        const totalLoungeCredits = loungeCredits.reduce((sum, entry) => {
-            return sum + (entry.totalCredits - entry.usedCredits);
-        }, 0);
+        const used = loungeCredits.reduce((sum, entry) => sum + entry.usedCredits, 0);
+        const total = loungeCredits.reduce((sum, entry) => sum + entry.totalCredits, 0);
+        const loungeCreditsSummary = { used, total };
 
         //4. nearest upcoming payment date (among unpaid cards)
         const allUserCards = await prisma.creditCard.findMany({
@@ -74,7 +74,7 @@ export const getDashboardSummary = async (req: AuthenticatedRequest, res: Respon
         return res.status(200).json({
             totalCards,
             dueThisMonth,
-            totalLoungeCredits, 
+            loungeCredits: loungeCreditsSummary, 
             nextPaymentDate,
         });
     } catch (error) {
