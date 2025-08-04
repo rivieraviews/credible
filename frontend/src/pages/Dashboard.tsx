@@ -34,7 +34,7 @@ export default function Dashboard() {
       <Header />
       <div className="p-6">
         {loading ? (
-          <div className="text-center text-muted-foreground">Loading...</div>
+          <div className="text-center text-muted-foreground text-gray-500">Loading...</div>
         ) : (
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <DashboardCard
