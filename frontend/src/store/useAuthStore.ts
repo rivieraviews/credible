@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import axios from 'axios'
+import api from '../utils/api'
 
 type User = {
   id: string
@@ -21,24 +21,24 @@ export const useAuthStore = create<AuthState>((set) => ({
   token: localStorage.getItem('token'),
 
   login: async (email, password) => {
-    const res = await axios.post('/auth/login', { email, password })
-    const token = res.data.token
+    const res = await api.post('/auth/login', { email, password })
+    const { token, user } = res.data
     localStorage.setItem('token', token)
-    set({ token })
+    set({ token, user })
 
-    const userRes = await axios.get('/auth/me', {
+    const userRes = await api.get('/auth/me', {
       headers: { Authorization: `Bearer ${token}` },
     })
     set({ user: userRes.data })
   },
 
   signup: async (name, email, password) => {
-    const res = await axios.post('/auth/signup', { name, email, password })
-    const token = res.data.token
+    const res = await api.post('/auth/signup', { name, email, password })
+    const { token, user } = res.data
     localStorage.setItem('token', token)
-    set({ token })
+    set({ token, user })
 
-    const userRes = await axios.get('/auth/me', {
+    const userRes = await api.get('/auth/me', {
       headers: { Authorization: `Bearer ${token}` },
     })
     set({ user: userRes.data })
@@ -46,11 +46,17 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   fetchUser: async () => {
     const token = localStorage.getItem('token')
-    if (!token) return
-    const res = await axios.get('/auth/me', {
+    if (!token || token === 'undefined') return
+    try {
+      const res = await api.get('/auth/me', {
       headers: { Authorization: `Bearer ${token}` },
-    })
-    set({ user: res.data })
+      })
+      set({ user: res.data })
+    } catch (err) {
+      console.error('Fetch user failed: ', err)
+      localStorage.removeItem(token)
+      set({ user: null, token: null })
+    }
   },
 
   logout: () => {
