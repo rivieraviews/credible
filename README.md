@@ -69,5 +69,3 @@ Backend follows a classic MVC structure under `src/`:
 
 **[rivieraviews](https://www.linkedin.com/in/abhipsa-adhikary)**. Currently debugging something that has inexplicably gone wrong. Feel free to leave a message.
 
----
-
