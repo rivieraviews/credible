@@ -55,12 +55,15 @@ export default function AddCardForm() {
                 <input name="cardName" placeholder="Card Name" onChange={handleChange} required />
 
                 <input name="issuer" placeholder="Issuer Bank" onChange={handleChange} required />
-
+                
                 <input name="lastFourDigits" placeholder="Last 4 Digits" onChange={handleChange} maxLength={4} required />
-
+                
                 <input name="expiresOn" type="date" placeholder="Expiry Date" onChange={handleChange} required />
+                
                 <input name="billingDay" type="number" placeholder="Billing Day (1-31)" onChange={handleChange} required />
+                
                 <input name="paymentDay" type="number" placeholder="Payment Day (1-31)" onChange={handleChange} required />
+                
                 <input name="annualFee" type="number" placeholder="Annual Fee" onChange={handleChange} required />
                 
                 <select name="status" onChange={handleChange} required>
@@ -68,6 +71,7 @@ export default function AddCardForm() {
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                 </select>
+                
                 <label>
                     <input name="isPaid" type="checkbox" onChange={handleChange} /> Mark as Paid
                 </label>
