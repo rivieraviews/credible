@@ -1,8 +1,15 @@
+import { useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 
 export default function Header() {
     const user = useAuthStore((state) => state.user);
+    const fetchUser = useAuthStore((state) => state.fetchUser);
+
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]);
+    
     return (
         <header className="flex items-center justify-between px-6 py-4 shadow bg-white">
             <h1 className="text-2xl font-bold text-gray-900">Credible: A CC Management System</h1>

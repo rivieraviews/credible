@@ -10,6 +10,7 @@ type User = {
 type AuthState = {
   user: User | null
   token: string | null
+  setUser: (user: User | null) => void
   login: (email: string, password: string) => Promise<void>
   signup: (name: string, email: string, password: string) => Promise<void>
   fetchUser: () => Promise<void>
@@ -19,6 +20,7 @@ type AuthState = {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: localStorage.getItem('token'),
+  setUser: (user) => set({ user }),
 
   login: async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
@@ -26,9 +28,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem('token', token)
     set({ token, user })
 
-    const userRes = await api.get('/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const userRes = await api.get('/auth/me')
     set({ user: userRes.data })
   },
 
@@ -38,9 +38,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem('token', token)
     set({ token, user })
 
-    const userRes = await api.get('/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const userRes = await api.get('/auth/me')
     set({ user: userRes.data })
   },
 
@@ -48,9 +46,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     const token = localStorage.getItem('token')
     if (!token || token === 'undefined') return
     try {
-      const res = await api.get('/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await api.get('/auth/me')
       set({ user: res.data })
     } catch (err) {
       console.error('Fetch user failed: ', err)
