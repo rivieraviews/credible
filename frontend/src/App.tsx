@@ -6,13 +6,15 @@ import AddCardForm from "./pages/AddCardForm"
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/add-card" element={<AddCardForm />} />
-        </Routes>
+        <div className="bg-white min-h-screen w-full">
+            <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/add-card" element={<AddCardForm />} />
+            </Routes>
+        </div>
     )
 }
- 
+
 export default App
