@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import DashboardCard from "../components/DashboardCard";
 import { CreditCard, CalendarCheck, Plane, Clock } from "lucide-react";
 import { getDashboardData } from "../services/dashboard";
+import CreditCardList from "../components/CreditCardList";
 
 type DashboardData = {
   totalCards: number;
@@ -30,7 +31,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-full">
       <Header />
       <div className="p-6">
         {loading ? (
@@ -51,7 +52,7 @@ export default function Dashboard() {
             />
             <DashboardCard
               icon={<Plane />}
-              label="Lounge Credits"
+              label="Lounge Credits (Used / Total)"
               value={`${data?.loungeCredits?.used ?? "-"} / ${data?.loungeCredits?.total ?? "-"}`}
               color="text-emerald-600"
             />
@@ -71,6 +72,7 @@ export default function Dashboard() {
             />
           </div>
         )}
+        <CreditCardList />
       </div>
     </div>
   );
