@@ -5,8 +5,11 @@ import {
     ClipboardList
 } from "lucide-react"
 import type { Card } from "../types/Card"
+import { deleteCardById } from "../services/cards";
+import { useCardStore } from "../store/useCardStore";
 
 export default function CardItem({
+    id,
     cardName,
     bank,
     network,
@@ -18,6 +21,20 @@ export default function CardItem({
     status,
     loungeCredits
 }: Card) {
+    const removeFromStore = useCardStore((state) => state.deleteCard);
+
+    const handleDelete = async () => {
+        if (!confirm("Are you sure you want to delete this card?")) return;
+
+        try {
+            await deleteCardById(id);
+            removeFromStore(id);
+        } catch (err) {
+            console.error("Failed to delete card: ", err);
+            alert("Failed to delete card.");
+        }
+    }
+
     return (
         <div className="bg-white border rounded-x1 shadow-sm p-4">
             <div className="flex justify-between items-start">
@@ -37,7 +54,12 @@ export default function CardItem({
                     </span>
                     <ClipboardList size={18} className="cursor-pointer text-gray-500" />
                     <Pencil size={18} className="cursor-pointer text-gray-500" />
-                    <Trash2 size={18} className="cursor-pointer text-red-500" />
+                    <Trash2 
+                        size={18} 
+                        className="cursor-pointer 
+                        text-red-500" 
+                        onClick={handleDelete}
+                    />
                 </div>
             </div>
 
