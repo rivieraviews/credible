@@ -1,9 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//to add or edit a credit card
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../utils/api";
+import { useCardStore } from "../store/useCardStore";
 
-export default function AddCardForm() {
+export default function CardForm() {
+    const { id } = useParams();
     let navigate = useNavigate();
+    const cards = useCardStore((state) => state.cards);
+    const updateCardInStore = useCardStore((state) => state.updateCard);
+
+    const existingCard = cards.find((c) => c.id === id);
 
     const [formData, setFormData] = useState({
         cardName: "",
@@ -16,6 +23,22 @@ export default function AddCardForm() {
         annualFee: "",
         status: "",
     });
+
+    useEffect(() => {
+        if (existingCard) {
+            setFormData({
+                cardName: existingCard.cardName,
+                issuer: existingCard.issuer,
+                lastFourDigits: existingCard.lastFourDigits,
+                expiresOn: existingCard.expiresOn.split("T")[0],
+                billingDay: existingCard.billingDay.toString(),
+                paymentDay: existingCard.paymentDay.toString(),
+                isPaid: existingCard.isPaid,
+                annualFee: existingCard.annualFee.toString(),
+                status: existingCard.status,
+            })
+        }
+    }, [existingCard]);
 
     const [error, setError] = useState<string | null>(null);
 
@@ -31,16 +54,23 @@ export default function AddCardForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post("/cards", {
+            const payload = {
                 ...formData,
                 annualFee: Number(formData.annualFee),
                 billingDay: Number(formData.billingDay),
                 paymentDay: Number(formData.paymentDay),
                 expiresOn: new Date(formData.expiresOn),
-            });
+            };
+            if (id) {
+                //edit
+                const res = await api.put(`/cards/${id}`, payload);
+                updateCardInStore(res.data);
+            } else {
+                //add
+                await api.post("/cards", payload);
+            }
 
-            alert("New card added, woohoo!");
-            navigate("/");
+      navigate("/");
         } catch (err) {
             setError("Failed to add card. Check your inputs and try again.");
             console.error(err);

@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import Login from "./pages/Login"
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
-import AddCardForm from "./pages/AddCardForm"
+import CardForm from "./pages/CardForm"
 
 function App() {
     return (
@@ -11,7 +11,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/add-card" element={<AddCardForm />} />
+                <Route path="/add-card" element={<CardForm />} />
             </Routes>
         </div>
     )
